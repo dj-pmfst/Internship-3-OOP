@@ -5,7 +5,7 @@
         private int nextId = 0;
         public Dictionary<int, User> Users { get; set; } = new Dictionary<int, User>();
 
-        public User registration() { 
+        public User Registration() { 
         
             Console.Clear();
             Console.WriteLine("Registracija \n \n");
@@ -35,7 +35,7 @@
 
         public void AddUser()
         {
-            var newUser = registration();
+            var newUser = Registration();
             Users[nextId] = newUser;
             nextId++;
         }

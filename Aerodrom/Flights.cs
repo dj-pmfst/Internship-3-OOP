@@ -8,7 +8,7 @@
         public Flight RegisterFlight()
         {
             Console.Clear();
-            Console.WriteLine("Registracija \n \n");
+            Console.WriteLine("Dodavanje letova \n \n");
             Console.Write("Unesite ime: ");
             string name = NameValid(Console.ReadLine(), "name");
             Console.Write("Unesite datum polaska: ");
