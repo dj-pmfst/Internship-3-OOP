@@ -19,7 +19,11 @@
             bool inApp = true;
             int input;
 
-            while (inApp)
+            while (inApp)   
+            //rearangeat da su svi menuinput i sl inputi za druge fje u zasebnoj klasi.
+            //u usermenu i sl stavit enum
+            //ili ih skroz maknit i stavit glavni enum u ovaj loop ? hm
+
             {
                 Console.Clear();
                 var menuInput = MainMenu();

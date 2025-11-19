@@ -56,5 +56,27 @@
             name_input = char.ToUpper(name_input[0]) + name_input.Substring(1).ToLower();
             return name_input;
         }
+
+        public static bool Confirmation(int id, string type)
+        {
+            Console.Write("\nJeste li sigurni da želite izmjeniti {0}? (y/n): ", id); 
+            //provjera jel unos uopce dobar myb ? 
+            //mozda nije ni potrebno tbh 
+            var message = Console.ReadLine();
+            if (message.ToLower() == "y" || message.ToLower() == "yes" || message.ToLower() == "da")
+            {
+                Console.WriteLine("Uspješno {0}", type);
+                Console.WriteLine("\nPritisnite bilo koju tipku za nastavak...");
+                Console.ReadKey();
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("Otkazano {0}", type);
+                Console.WriteLine("\nPritisnite bilo koju tipku za nastavak...");
+                Console.ReadKey(); //ovo bi mogla bit jdna fja myb
+                return false;
+            }
+        }
     }
 }
