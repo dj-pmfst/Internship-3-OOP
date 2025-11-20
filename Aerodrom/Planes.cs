@@ -17,13 +17,7 @@
 
             Console.WriteLine("Uspješno registriran avion {0}", name);
 
-            return new Plane
-            {
-                id = nextId,
-                name = name,
-                year = year.Year,
-                //broj letova, sjedala/kategorije
-            };
+            return new Plane(name, year.Year, 0, seats);
         }
 
         public void AddPlane()
@@ -35,17 +29,12 @@
 
         public void DeletePlane()
         {
-            Console.Clear();
-            Console.Write("Brisanje aviona \n \n ");
-            var menuText = "Unesite broj za željenu opciju " +
-                "\n 1-Po ID-u \n 2-Po nazivu " +
-                "\n 0-Povratak na prethodni izbornik";
-            var input = InputValid(menuText, 2);
+            var input = Menus.SearchMenu("Brisanje aviona");
 
             if (input == 1)
             {
                 // dodat da izlista sve letove
-                var idInput = InputValid("Unesite ID: ", Airplanes.Count());
+                var idInput = InputValid("Unesite ID. ", Airplanes.Count());
                 var confirm = Confirmation(idInput, "brisanje");
                 if (confirm == true)
                 {
@@ -62,7 +51,11 @@
                 {
                     if (plane.Value.name == nameInput) { planeId = plane.Key; }
                 }
-                if (planeId == -1) { Console.WriteLine("Ne postoji avion s unesenim ID-em."); } ////jos stavit vracanje nazad itd
+                if (planeId == -1) 
+                { 
+                    Console.WriteLine("Ne postoji avion s unesenim ID-em."); 
+                    Continue();
+                } 
                 else 
                 { 
                     var confirm = Confirmation(planeId, "brisanje"); 
@@ -71,23 +64,18 @@
             }
             else if (input == 0)
             {
-                PlanesMenuInput();
+                Menus.PlanesMenuInput();
             }
         }
 
         public void SearchPlane()
         {
-            Console.Clear();
-            Console.Write("Pretraživanje aviona \n \n ");
-            var menuText = "Unesite broj za željenu opciju " +
-                "\n 1-Po ID-u \n 2-Po nazivu " +
-                "\n 0-Povratak na prethodni izbornik";
-            var input = InputValid(menuText, 2);
+            int input = Menus.SearchMenu("Pretraživanje aviona");
 
             if (input == 1)
             {
                 // dodat da izlista sve letove
-                var idInput = InputValid("Unesite ID: ", Airplanes.Count());
+                var idInput = InputValid("Unesite ID. ", Airplanes.Count());
                 foreach (var plane in Airplanes)
                 {
                     if (idInput == plane.Key)
@@ -98,9 +86,8 @@
                     }
                     else
                     { /// ovo u biti triba maknit jer ce onda printat za svaki let, stavit neki counter myb
-                        Console.WriteLine("Nema aviona s unesenim ID-em. " +
-                            "\nPritisnite bilo koju tipku za nastavak...");
-                        Console.ReadKey();
+                        Console.WriteLine("Nema aviona s unesenim ID-em. ");
+                        Continue();
                     }
                 }
             }
@@ -117,16 +104,15 @@
                         plane.Key, plane.Value.name, plane.Value.year, plane.Value.numberOfFlights);
                     }
                     else
-                    { /// ovo u biti triba maknit jer ce onda printat za svaki let, stavit neki counter myb
-                        Console.WriteLine("Nema aviona s unesenim nazivom. " +
-                            "\nPritisnite bilo koju tipku za nastavak...");
-                        Console.ReadKey();
+                    { /// 
+                        Console.WriteLine("Nema aviona s unesenim nazivom. ");
+                        Continue();
                     }
                 } //moglo bi se ovo pojednostavnit s obzirom da su oba searcha na isti princip.. mozda jedna funkcija u functionality za sve searcheve? 
             }
             else if (input == 0)
             {
-                PlanesMenuInput();
+                Menus.PlanesMenuInput();
             }
         }
 
@@ -140,18 +126,7 @@
                 "- Broj letova: {3} \n",
                 plane.Key, plane.Value.name, plane.Value.year, plane.Value.numberOfFlights);
             }
-        }
-
-        public static int PlanesMenuInput()
-        {
-            Console.Clear();
-            Console.Write("Avioni \n \n ");
-            var menuText = "Unesite broj za željenu opciju " +
-                "\n 1-Prikaz svih aviona \n 2-Dodavanje novog aviona " +
-                "\n 3-Pretraživanje aviona \n 4-Brisanje aviona " +
-                "\n 0-Povratak na prethodni izbornik";
-            var input = InputValid(menuText, 4);
-            return input;
+            Continue();
         }
 
         public void PlanesMenu(int input)

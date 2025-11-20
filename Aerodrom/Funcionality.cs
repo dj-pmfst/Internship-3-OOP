@@ -21,42 +21,26 @@ namespace Aerodrom
 
         public static string GenderValid(string genderInput)
         {
-            while(!Enum.TryParse(genderInput.ToLower(), true, out Gender gender))
-            {
-                Console.Write("\nNeispravan unos. \nUnesite opet:");
-                genderInput = Console.ReadLine();
-            }
+            while(!Enum.TryParse(genderInput.ToLower(), true, out Gender gender)) { genderInput = ErrInput(); }
             return genderInput;
         }
 
         public static string PositionValid(string positionInput)
         {
-            while (!Enum.TryParse(positionInput.ToLower(), true, out Position position))
-            {
-                Console.Write("\nNeispravan unos. \nUnesite opet:");
-                positionInput = Console.ReadLine();
-            }
+            while (!Enum.TryParse(positionInput.ToLower(), true, out Position position)) { positionInput = ErrInput(); }
             return positionInput;
         }
 
-        public static DateTime DateValid(string date_input)
+        public static DateTime DateValid(string dateInput)
         {
-            while (!DateTime.TryParse(date_input, out DateTime date) || date.Year > 2025)
-            {
-                Console.Write("\nNeispravan unos. \nUnesite opet:");
-                date_input = Console.ReadLine();
-            }
-            return DateTime.Parse(date_input);
+            while (!DateTime.TryParse(dateInput, out DateTime date) || date.Year > 2025) { dateInput = ErrInput(); }
+            return DateTime.Parse(dateInput);
         }
 
-        public static double NumberValid(string number_input)
+        public static double NumberValid(string numberInput)
         {
-            while (!double.TryParse(number_input, out double number) || double.Parse(number_input) < 0)
-            {
-                Console.Write("\n Neispravan unos. \n Unesite opet: ");
-                number_input = Console.ReadLine();
-            }
-            return double.Parse(number_input);
+            while (!double.TryParse(numberInput, out double number) || double.Parse(numberInput) < 0) { numberInput = ErrInput(); }
+            return double.Parse(numberInput);
         }
 
         public static int InputValid(string text, int count)
@@ -102,17 +86,27 @@ namespace Aerodrom
             if (message.ToLower() == "y" || message.ToLower() == "yes" || message.ToLower() == "da")
             {
                 Console.WriteLine("Uspješno {0}", type);
-                Console.WriteLine("\nPritisnite bilo koju tipku za nastavak...");
-                Console.ReadKey();
+                Continue();
                 return true;
             }
             else
             {
                 Console.WriteLine("Otkazano {0}", type);
-                Console.WriteLine("\nPritisnite bilo koju tipku za nastavak...");
-                Console.ReadKey(); //ovo bi mogla bit jdna fja myb
+                Continue();
                 return false;
             }
+        }
+
+        public static void Continue()
+        {
+            Console.WriteLine("\nPritisnite bilo koju tipku za nastavak...");
+            Console.ReadKey();
+        }
+
+        public static string ErrInput()
+        {
+            Console.Write("\nNeispravan unos. \nUnesite opet:");
+            return Console.ReadLine();
         }
     }
 }

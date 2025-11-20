@@ -58,5 +58,15 @@
             var input = InputValid(menuText, 4);
             return input;
         }
+        public static int SearchMenu(string type)
+        {
+            Console.Clear();
+            Console.Write("{0} \n \n ", type);
+            var menuText = "Unesite broj za željenu opciju " +
+                "\n 1-Po ID-u \n 2-Po nazivu " +
+                "\n 0-Povratak na prethodni izbornik";
+            var input = InputValid(menuText, 2);
+            return input;
+        }
     }
 }

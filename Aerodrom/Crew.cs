@@ -20,7 +20,7 @@
                         member.Key, member.Value.name, member.Value.surname, member.Value.dob); 
                 }
             }
-            var pilotId = InputValid("Unesite ID pilota kojeg želite dodati: ", CrewMembers.Count()); //validacija da je uneseni id za pilota
+            var pilotId = InputValid("Unesite ID pilota kojeg želite dodati. ", CrewMembers.Count()); //validacija da je uneseni id za pilota
 
             foreach (var member in CrewMembers)
             {
@@ -31,7 +31,7 @@
                 }
             }
             //ovo bi se vjv moglo pojednostavnit
-            var copilotId = InputValid("Unesite ID kopilota kojeg želite dodati: ", CrewMembers.Count());
+            var copilotId = InputValid("Unesite ID kopilota kojeg želite dodati. ", CrewMembers.Count());
 
             foreach (var member in CrewMembers)
             {
@@ -41,7 +41,7 @@
                         member.Key, member.Value.name, member.Value.surname, member.Value.dob);
                 }
             }
-            var stewradId = InputValid("Unesite ID stujara/ese kojeg/u želite dodati: ", CrewMembers.Count());
+            var stewradId = InputValid("Unesite ID stujara/ese kojeg/u želite dodati. ", CrewMembers.Count());
 
             Crews[crewId] = new List<int> { pilotId, copilotId, stewradId };
             crewId++;
@@ -49,7 +49,7 @@
             //treba dodat provjeru da uneseni clan nije vec negdi
         }
 
-        public CrewMember CrewMemberRegistration()
+        private CrewMember CrewMemberRegistration()
         {
             Console.Clear();
             Console.WriteLine("Dodavanje člana posade \n \n");
@@ -66,15 +66,7 @@
 
             Console.WriteLine("Uspješno registriran član posade {0} {1}", name, surname);
 
-            return new CrewMember
-            {
-                id = nextId,
-                name = name,
-                surname = surname,
-                dob = dob,
-                position = position,
-                gender = gender  
-            };
+            return new CrewMember(name, surname, dob, position, gender);
         }
 
         public void AddCrewMember()
@@ -99,18 +91,6 @@
             }
         }
 
-        public static int CrewMenuInput()
-        {
-            Console.Clear();
-            Console.Write("Posada \n \n ");
-            var menuText = "Unesite broj za željenu opciju " +
-                "\n 1-Prikaz svih posada \n 2-Kreiranje nove posade " +
-                "\n 3-Dodavanje osobe \n 0-Povratak na prethodni izbornik";
-
-            var firstInput = InputValid(menuText, 3);
-
-            return firstInput;
-        }
         public void CrewMenu(int input)
         {
             switch (input)
