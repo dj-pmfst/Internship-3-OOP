@@ -24,7 +24,6 @@
                 year = year.Year,
                 //broj letova, sjedala/kategorije
             };
-
         }
 
         public void AddPlane()

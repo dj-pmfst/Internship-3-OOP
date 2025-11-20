@@ -1,7 +1,43 @@
-﻿namespace Aerodrom
+﻿using static Aerodrom.Funcionality;
+
+namespace Aerodrom
 {
     internal class Funcionality
     {
+        public enum Gender
+        {
+            male,
+            female,
+            m,
+            f
+        }
+        public enum Position
+        {
+            pilot,
+            copilot,
+            steward,
+            stewardess
+        }
+
+        public static string GenderValid(string genderInput)
+        {
+            while(!Enum.TryParse(genderInput.ToLower(), true, out Gender gender))
+            {
+                Console.Write("\nNeispravan unos. \nUnesite opet:");
+                genderInput = Console.ReadLine();
+            }
+            return genderInput;
+        }
+
+        public static string PositionValid(string positionInput)
+        {
+            while (!Enum.TryParse(positionInput.ToLower(), true, out Position position))
+            {
+                Console.Write("\nNeispravan unos. \nUnesite opet:");
+                positionInput = Console.ReadLine();
+            }
+            return positionInput;
+        }
 
         public static DateTime DateValid(string date_input)
         {
