@@ -40,7 +40,7 @@
             nextId++;
         }
 
-        public void LogIn(string email, string password )
+        public void LogIn()
         {
             Console.Clear();
             Console.WriteLine("Prijava \n \n");
@@ -70,6 +70,14 @@
             var input = InputValid(menuText, 4);
             return input;
         }
-
+        public void PassengersMenu(int input)
+        {
+            switch (input)
+            {
+                case 0: break;
+                case 1: Registration(); break;
+                case 2: LogIn(); break;
+            }
+        }
     }
 }

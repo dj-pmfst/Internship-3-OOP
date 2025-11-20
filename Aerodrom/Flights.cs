@@ -3,7 +3,13 @@
     internal class Flights : Funcionality
     {
         private int nextId = 0;
+
+        private Crew crew;
         public Dictionary<int, Flight> Trips { get; set; } = new Dictionary<int, Flight>();
+        public Flights(Crew c)
+        {
+            crew=c;
+        }
 
         public Flight RegisterFlight()
         {
@@ -19,6 +25,7 @@
             double distance = NumberValid(Console.ReadLine());
             Console.Write("Unesite vrijeme putovanja: ");
             double duration = NumberValid(Console.ReadLine());
+            int crewId = InputValid("Unesite ID posade: ", crew.Crews.Count);
 
             Console.WriteLine("Uspješno registriran let {0}", name);
 
@@ -30,7 +37,7 @@
                 arrival = arrival,
                 distance = distance,
                 duration = duration,
-                //crew
+                crew = crewId
             };
         }
 
@@ -41,7 +48,7 @@
             nextId++;
         }
 
-        public void SearchFlights(List<KeyValuePair<int, Tuple<string, DateTime, DateTime, double, double>>> Trips)
+        public void SearchFlights()
         {
             Console.Clear();
             Console.Write("Pretraživanje letova \n \n ");
@@ -53,8 +60,7 @@
             if (input == 1)
             {
                 // dodat da izlista sve letove
-                Console.Write("Unesite ID: ");
-                var idInput = InputValid(Console.ReadLine(), Trips.Count());
+                var idInput = InputValid("Unesite ID: ", Trips.Count());
                 foreach (var trip in Trips)
                 {
                     if (idInput == trip.Key)
@@ -62,12 +68,12 @@
                         Console.WriteLine("ID: {0} - Naziv: {1} - Udaljenost: {2} km " +
                         "- Datum polaska: {3} - Datum dolaska: {4} " +
                         "- Vrijeme putovanja: {5} h \n",
-                        trip.Key, trip.Value.Item1, trip.Value.Item2, trip.Value.Item3, trip.Value.Item4,
-                        trip.Value.Item5);
+                        trip.Key, trip.Value.name, trip.Value.distance, trip.Value.arrival, trip.Value.departure,
+                        trip.Value.duration);
                     }
                     else
                     { /// ovo u biti triba maknit jer ce onda printat za svaki let, stavit neki counter myb
-                        Console.WriteLine("Nema letoa s unesenim ID-em. " +
+                        Console.WriteLine("Nema letova s unesenim ID-em. " +
                             "\nPritisnite bilo koju tipku za nastavak...");
                         Console.ReadKey();
                     }
@@ -75,17 +81,16 @@
             }
             else if (input == 2)
             {
-                Console.Write("Unesite naziv leta: ");
-                var nameInput = NameValid(Console.ReadLine(), "name");
+                var nameInput = NameValid("Unesite naziv leta: ", "name");
                 foreach (var trip in Trips)
                 {
-                    if (nameInput == trip.Value.Item1)
+                    if (nameInput == trip.Value.name)
                     {
                         Console.WriteLine("ID: {0} - Naziv: {1} - Udaljenost: {2} km " +
                         "- Datum polaska: {3} - Datum dolaska: {4} " +
                         "- Vrijeme putovanja: {5} h \n",
-                        trip.Key, trip.Value.Item1, trip.Value.Item2, trip.Value.Item3, trip.Value.Item4,
-                        trip.Value.Item5);
+                        trip.Key, trip.Value.name, trip.Value.distance, trip.Value.arrival, trip.Value.departure,
+                        trip.Value.duration);
                     }
                     else
                     { /// ovo u biti triba maknit jer ce onda printat za svaki let, stavit neki counter myb
@@ -104,8 +109,7 @@
         public void EditFlight()
         {
             Console.Clear(); //printat sve letove
-            Console.Write("Uređivanje leta \n \nUnesite ID leta kojeg zelite urediti: ");
-            var idInput = InputValid(Console.ReadLine(), Trips.Count()); //ispis ako uneseni id ne postoji ? 
+            var idInput = InputValid("Uređivanje leta \n \nUnesite ID leta kojeg zelite urediti: ", Trips.Count()); //ispis ako uneseni id ne postoji ? 
             var confirm = Confirmation(idInput, "uređivanje");
 
             if (confirm == true)
@@ -114,18 +118,17 @@
                 Trips[idInput].arrival = DateValid(Console.ReadLine());
                 Console.Write("Unesite novo vrijeme dolaska: ");
                 Trips[idInput].departure = DateValid(Console.ReadLine());
-                //posada 
+                Trips[idInput].crew = InputValid("Unesite ID nove posade: ", crew.Crews.Count);
 
                 //u biti nema smisla da se ranije printa jel uspjenso uredeno
                 //al nez kako popravit bez da sve pastean ovdi
             }
         }
-
+        
         public void DeleteFlight()
         {
             Console.Clear(); //honestly ovo i uredivanje bi mogla bit jedna fja. tj bar pola njihove funkcionalnosti
-            Console.Write("Brisanje leta \n \nUnesite ID leta kojeg zelite izbrisati: ");
-            var idInput = InputValid(Console.ReadLine(), Trips.Count()); //ispis ako uneseni id ne postoji ? 
+            var idInput = InputValid("Brisanje leta \n \nUnesite ID leta kojeg zelite izbrisati: ", Trips.Count()); //ispis ako uneseni id ne postoji ? 
             var confirm = Confirmation(idInput, "brisanje");
 
             if (confirm == true) 
@@ -134,15 +137,15 @@
             }
         }
 
-        public void ListFlights(List<KeyValuePair<int, Tuple<string, DateTime, DateTime, double, double>>> Trips)
+        public void ListFlights()
         {
             foreach (var trip in Trips)
             {
                 Console.WriteLine("ID: {0} - Naziv: {1} - Udaljenost: {2} km " +
                     "- Datum polaska: {3} - Datum dolaska: {4} " +
                     "- Vrijeme putovanja: {5} h \n",
-                    trip.Key, trip.Value.Item1, trip.Value.Item2, trip.Value.Item3, trip.Value.Item4,
-                    trip.Value.Item5);
+                    trip.Key, trip.Value.name, trip.Value.distance, trip.Value.arrival, trip.Value.departure,
+                    trip.Value.duration);
             }
             Console.Write("\n Pritisnite bilo koju tipku za nastavak...");
             Console.ReadKey();
@@ -158,6 +161,17 @@
                 "\n 5-Brisanje leta \n 0-Povratak na prethodni izbornik";
             var input = InputValid(menuText, 5);
             return input;
+        }
+        public void FlightsMenu(int input)
+        {
+            switch (input)
+            {
+                case 0: break;
+                case 1: ListFlights(); break;
+                case 2: AddFlight(); break;
+                case 3: SearchFlights(); break;
+                case 4: DeleteFlight(); break;
+            }
         }
     }
 }

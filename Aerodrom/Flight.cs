@@ -8,6 +8,6 @@
         public DateTime arrival { get; set; }
         public double distance { get; set; }
         public double duration { get; set; }
-        public List<int> crew { get; set; } = new List<int>();
+        public int crew { get; set; } 
     }
 }

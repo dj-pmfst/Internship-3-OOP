@@ -4,6 +4,14 @@
     {
         static void Main(string[] args)
         {
+            Planes planes = new Planes();
+
+            Crew crewInstance = new Crew();
+            Flights flights = new Flights(crewInstance);
+
+            Passengers passengers = new Passengers();  
+            Crew crew = new Crew(); 
+
             static int MainMenu()
             {
                 Console.Write("Glavni izbornik \n \n ");
@@ -22,26 +30,28 @@
             while (inApp)   
             //rearangeat da su svi menuinput i sl inputi za druge fje u zasebnoj klasi.
             //u usermenu i sl stavit enum
-            //ili ih skroz maknit i stavit glavni enum u ovaj loop ? hm
-
             {
                 Console.Clear();
                 var menuInput = MainMenu();
                 if (menuInput == 1)
                 {
                     input = Passengers.PassengersMenuInput();
+                    passengers.PassengersMenu(input);
                 }
                 else if (menuInput == 2)
                 {
                     input = Flights.FlightsMenuInput();
+                    flights.FlightsMenu(input);
                 }
                 else if (menuInput == 3)
                 {
                     input = Planes.PlanesMenuInput();
+                    planes.PlanesMenu(input);
                 }
                 else if (menuInput == 4)
                 {
                     input = Crew.CrewMenuInput();
+                    crew.CrewMenu(input);
                 }
                 else if (menuInput == 0)
                 {

@@ -5,7 +5,7 @@
         private int nextId = 0;
         public Dictionary<int, Plane> Airplanes { get; set; } = new Dictionary<int, Plane>();
 
-        public Plane RegisterPlane()
+        private Plane RegisterPlane()
         {
             Console.Clear();
             Console.Write("Dodavanje aviona \n \n ");
@@ -33,7 +33,7 @@
             nextId++;
         }
 
-        public void DeletePlane(int id)
+        public void DeletePlane()
         {
             Console.Clear();
             Console.Write("Brisanje aviona \n \n ");
@@ -45,8 +45,7 @@
             if (input == 1)
             {
                 // dodat da izlista sve letove
-                Console.Write("Unesite ID: ");
-                var idInput = InputValid(Console.ReadLine(), Airplanes.Count());
+                var idInput = InputValid("Unesite ID: ", Airplanes.Count());
                 var confirm = Confirmation(idInput, "brisanje");
                 if (confirm == true)
                 {
@@ -76,7 +75,7 @@
             }
         }
 
-        public void SearchPlane(int id)
+        public void SearchPlane()
         {
             Console.Clear();
             Console.Write("Pretraživanje aviona \n \n ");
@@ -88,8 +87,7 @@
             if (input == 1)
             {
                 // dodat da izlista sve letove
-                Console.Write("Unesite ID: ");
-                var idInput = InputValid(Console.ReadLine(), Airplanes.Count());
+                var idInput = InputValid("Unesite ID: ", Airplanes.Count());
                 foreach (var plane in Airplanes)
                 {
                     if (idInput == plane.Key)
@@ -132,7 +130,7 @@
             }
         }
 
-        public void ListPlanes()
+        private void ListPlanes()
         {
             Console.Clear();
             Console.Write("Prikaz svoh aviona \n \n ");
@@ -154,6 +152,18 @@
                 "\n 0-Povratak na prethodni izbornik";
             var input = InputValid(menuText, 4);
             return input;
+        }
+
+        public void PlanesMenu(int input)
+        {
+            switch (input)
+            {
+                case 0: break;
+                case 1: ListPlanes(); break;
+                case 2: AddPlane(); break;
+                case 3: SearchPlane(); break;
+                case 4: DeletePlane(); break;
+            }
         }
     }
 }
