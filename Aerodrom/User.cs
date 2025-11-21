@@ -9,13 +9,14 @@
         public string password { get; set; }
         public List<int> flights { get; set; } = new List<int>();
 
-        public User(string name, string surname, DateTime dob, string email, string password)
+        public User(string name, string surname, DateTime dob, string email, string password, List<int> trips)
         {
             this.name = name;
             this.surname = surname;
             this.dob = dob;
             this.email = email;
             this.password = password;
+            this.flights = trips;
         }
     }
 

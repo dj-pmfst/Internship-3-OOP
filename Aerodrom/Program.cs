@@ -13,12 +13,12 @@
             bool inApp = true;
             int input;
 
-            passengers.Users.Add(0, new User("Ana", "Anic", DateTime.Parse("3.3.1990"), "anaanic@mail.com", "1234"));
-            passengers.Users.Add(1, new User("Mate", "Matic", DateTime.Parse("3.3.1995"), "matematic@mail.com", "4321"));
+            passengers.Users.Add(0, new User("Ana", "Anic", DateTime.Parse("3.3.1990"), "anaanic@mail.com", "1234", new List<int>()));
+            passengers.Users.Add(1, new User("Mate", "Matic", DateTime.Parse("3.3.1995"), "matematic@mail.com", "4321", new List<int>()));
 
-            flights.Trips.Add(0, new Flight("Pariz", DateTime.Parse("5.5.2025. 12:00"), DateTime.Parse("5.5.2025. 14:00"), 457, 2, 0));
-            flights.Trips.Add(1, new Flight("Chicago", DateTime.Parse("21.12.2025. 20:00"), DateTime.Parse("22.12.2025. 13:00"), 1102, 17, 1));
-            flights.Trips.Add(2, new Flight("Peking", DateTime.Parse("5.2.2025. 8:00"), DateTime.Parse("6.2.2025. 6:00"), 1365, 22, 2));
+            Flights.Trips.Add(0, new Flight("Pariz", DateTime.Parse("5.5.2025. 12:00"), DateTime.Parse("5.5.2025. 14:00"), 457, 2, 0));
+            Flights.Trips.Add(1, new Flight("Chicago", DateTime.Parse("21.12.2025. 20:00"), DateTime.Parse("22.12.2025. 13:00"), 1102, 17, 1));
+            Flights.Trips.Add(2, new Flight("Peking", DateTime.Parse("5.2.2025. 8:00"), DateTime.Parse("6.2.2025. 6:00"), 1365, 22, 2));
 
             crew.CrewMembers.Add(0, new CrewMember("Maria", "Maric", DateTime.Parse("9.7.2002."), "attendant", "female"));
             crew.CrewMembers.Add(1, new CrewMember("Marko", "Markic", DateTime.Parse("9.10.2000."), "attendant", "male"));

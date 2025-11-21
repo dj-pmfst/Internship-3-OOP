@@ -32,7 +32,7 @@ namespace Aerodrom
 
         public DateTime DateValid(string dateInput)
         {
-            while (!DateTime.TryParse(dateInput, out DateTime date) || date.Year > 2025) { dateInput = ErrInput(); }
+            while (!DateTime.TryParse(dateInput, out DateTime date) || date.Year > 2050) { dateInput = ErrInput(); }
             return DateTime.Parse(dateInput);
         }
 

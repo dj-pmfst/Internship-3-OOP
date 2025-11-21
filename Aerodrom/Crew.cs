@@ -26,7 +26,7 @@
 
             Console.WriteLine("Uspješno dodana posada.");
             Continue();
-            Menus.CrewMenuInput();
+            CrewMenu(); ;
         }
 
         private CrewMember CrewMemberRegistration()
@@ -56,7 +56,7 @@
             nextId++;
 
             Continue();
-            Menus.CrewMenuInput();
+            CrewMenu();
         }
 
         public void ListCrew()
@@ -73,7 +73,7 @@
                 }
             }
             Continue();
-            Menus.CrewMenuInput();
+            CrewMenu();
         }
 
         public void CrewMenu()

@@ -35,10 +35,9 @@
             return input;
         }
 
-        public static int UserMenuInput()
+        public static int UserMenuInput(int id, Dictionary<int, User> users)
         {
-            Console.Clear();
-            Console.Write("Prijava \n \n ");
+            UserMenuLoggedIn(id, "", users);
             var menuText = "Unesite broj za željenu opciju " +
                 "\n 1-Prikaz svih letova \n 2-Odabir leta " +
                 "\n 3-Pretraživanje letova \n 4-Otkazivanje leta " +
@@ -78,6 +77,13 @@
                 "\n 0-Povratak na prethodni izbornik";
             var input = InputValid(menuText, 2);
             return input;
+        }
+
+        public static void UserMenuLoggedIn(int id, string text, Dictionary<int, User> users)
+        {
+            Console.Clear();
+            Console.WriteLine("Prijavljeni korisnik: {0} {1} \n", users[id].name, users[id].surname);
+            Console.WriteLine("{0} \n", text);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Aerodrom
         private int nextId = 3;
 
         private Crew crew;
-        public Dictionary<int, Flight> Trips { get; set; } = new Dictionary<int, Flight>();
+        public static Dictionary<int, Flight> Trips { get; set; } = new Dictionary<int, Flight>();
         public Flights(Crew c) { crew = c; }
 
         public Flight RegisterFlight()
@@ -23,13 +23,13 @@ namespace Aerodrom
             DateTime arrival = DateValid(Console.ReadLine());
             Console.Write("Unesite udaljenost: ");
             double distance = NumberValid(Console.ReadLine());
-            Console.Write("Unesite vrijeme putovanja: ");
-            double duration = NumberValid(Console.ReadLine());
             int crewId = InputValid("Unesite ID posade. ", crew.Crews.Count);
+
+            TimeSpan duration = arrival - departure;
 
             Console.WriteLine("Uspješno registriran let {0}", name);
 
-            return new Flight(name, departure, arrival, distance, duration, crewId);
+            return new Flight(name, departure, arrival, distance, duration.TotalHours , crewId);
         }
 
         public void AddFlight()
@@ -37,6 +37,8 @@ namespace Aerodrom
             var newFlight = RegisterFlight();
             Trips[nextId] = newFlight;
             nextId++;
+            Continue();
+            FlightsMenu();
         }
 
         public void SearchFlights()
@@ -45,7 +47,7 @@ namespace Aerodrom
 
             if (input == 1) { SearchShow("ID"); }
             else if (input == 2) { SearchShow("naziv"); }
-            else if (input == 0) { Menus.FlightsMenuInput(); }
+            else if (input == 0) { FlightsMenu(); }
         }
 
         private void SearchShow(string type)
@@ -65,7 +67,7 @@ namespace Aerodrom
             }
             if (idInput == -1) { Console.WriteLine($"Nema letova s unesenim {type}om", type); }
             Continue();
-            Menus.FlightsMenuInput();
+            FlightsMenu();
         }
 
         public void EditFlight()
@@ -86,8 +88,9 @@ namespace Aerodrom
                 Trips[idInput].crewId = InputValid("Unesite ID nove posade. ", crew.Crews.Count);
 
                 Console.WriteLine("Uspješno uređivanje.");
-                Continue();
             }
+            Continue();
+            FlightsMenu();
         }
         
         public void DeleteFlight()
@@ -99,17 +102,17 @@ namespace Aerodrom
             var idInput = InputValid("\nUnesite ID leta kojeg zelite izbrisati: ", Trips.Count());  
             var confirm = Confirmation(idInput, "brisanje");
 
-            if (confirm == true) 
-            {
-                Trips.Remove(idInput);
-            }
+            if (confirm == true) { Trips.Remove(idInput); }
+
+            Continue ();
+            FlightsMenu();
         }
 
         public void ListFlights()
         {
             foreach (var trip in Trips) { Print(trip); }
             Continue();
-            Menus.FlightsMenuInput();
+            FlightsMenu();
         }
 
         public void FlightsMenu()
@@ -126,7 +129,7 @@ namespace Aerodrom
             }
         }
 
-        public void Print(KeyValuePair<int,Flight> trip)
+        public static void Print(KeyValuePair<int,Flight> trip)
         {
             Console.WriteLine("\nID: {0} - Naziv: {1} - Udaljenost: {2} km " +
             "- Datum polaska: {3} - Datum dolaska: {4} " +

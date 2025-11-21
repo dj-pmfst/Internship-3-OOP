@@ -36,7 +36,7 @@ namespace Aerodrom
             nextId++;
 
             Continue();
-            Menus.PlanesMenuInput();
+            PlanesMenu();
         }
 
         public void DeletePlane()
@@ -77,7 +77,7 @@ namespace Aerodrom
             }
             else if (input == 0)
             {
-                Menus.PlanesMenuInput();
+                PlanesMenu();
             }
         }
 
@@ -87,7 +87,7 @@ namespace Aerodrom
 
             if (input == 1) { SearchShow("ID"); }
             else if (input == 2) { SearchShow("naziv"); }
-            else if (input == 0) { Menus.PlanesMenuInput(); }
+            else if (input == 0) { PlanesMenu(); }
         }
 
         private void SearchShow(string type)
@@ -107,7 +107,7 @@ namespace Aerodrom
             }
             if (idInput == -1) { Console.WriteLine($"Nema aviona s unesenim {type}om", type); }
             Continue();
-            Menus.PlanesMenuInput();    
+            PlanesMenu();
         }
 
         private void ListPlanes()
@@ -116,7 +116,7 @@ namespace Aerodrom
             Console.Write("Prikaz svih aviona \n \n");
             foreach (var plane in Airplanes) { Print(plane); }
             Continue();
-            Menus.PlanesMenuInput();
+            PlanesMenu();
         }
 
         private void Print(KeyValuePair<int, Plane> plane)
