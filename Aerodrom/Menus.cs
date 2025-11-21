@@ -2,6 +2,17 @@
 {
     internal class Menus : Funcionality
     {
+        public static int MainMenu()
+        {
+            Console.Write("Glavni izbornik \n \n ");
+            var menuText = "Unesite broj za željenu opciju " +
+                "\n 1-Putnici \n 2-Letovi \n 3-Avioni \n 4-Posada" +
+                "\n 0-Izlaz iz aplikacije";
+
+            var firstInput = InputValid(menuText, 4);
+
+            return firstInput;
+        }
         public static int FlightsMenuInput()
         {
             Console.Clear();

@@ -15,29 +15,28 @@ namespace Aerodrom
         {
             pilot,
             copilot,
-            steward,
-            stewardess
+            attendant
         }
 
-        public static string GenderValid(string genderInput)
+        public string GenderValid(string genderInput)
         {
             while(!Enum.TryParse(genderInput.ToLower(), true, out Gender gender)) { genderInput = ErrInput(); }
             return genderInput;
         }
 
-        public static string PositionValid(string positionInput)
+        public string PositionValid(string positionInput)
         {
             while (!Enum.TryParse(positionInput.ToLower(), true, out Position position)) { positionInput = ErrInput(); }
             return positionInput;
         }
 
-        public static DateTime DateValid(string dateInput)
+        public DateTime DateValid(string dateInput)
         {
             while (!DateTime.TryParse(dateInput, out DateTime date) || date.Year > 2025) { dateInput = ErrInput(); }
             return DateTime.Parse(dateInput);
         }
 
-        public static double NumberValid(string numberInput)
+        public double NumberValid(string numberInput)
         {
             while (!double.TryParse(numberInput, out double number) || double.Parse(numberInput) < 0) { numberInput = ErrInput(); }
             return double.Parse(numberInput);
@@ -52,41 +51,50 @@ namespace Aerodrom
 
             while (!int.TryParse(input_input, out int number) || int.Parse(input_input) > count || int.Parse(input_input) < 0)
             {
-                Console.Write("\n Neispravan unos. Unesite opet.");
+                Console.Write("\nNeispravan unos. Unesite opet.");
 
-                if (text == "0") { Console.Write("\n\nOdabir: "); }
-                else { Console.Write("\n {0}\n\nOdabir: ", text); }
+                if (text == "0") { Console.Write("\nOdabir: "); }
+                else { Console.Write("\n {0}\nOdabir: ", text); }
 
                 input_input = Console.ReadLine();
             }
             return int.Parse(input_input);
         }
 
-        public static string NameValid(string name_input, string type)
+        public string NameValid(string name_input, string type)
         {
-            bool valid = name_input.All(Char.IsLetter);
-            while (valid == false)
+            while (string.IsNullOrWhiteSpace(name_input) || !name_input.All(Char.IsLetter))
             {
-                Console.WriteLine("\nNeispravan unos. Unesite opet. \n");
-                if (type == "name") { Console.Write("\n\nUnesite ime: "); }
-                else if (type == "surname") { Console.Write("\n\nUnesite prezime: "); }
+                Console.WriteLine("Neispravan unos. Unesite opet.");
+                if (type == "name") { Console.Write("\nUnesite ime: "); }
+                else if (type == "surname") { Console.Write("\nUnesite prezime: "); }
                 name_input = Console.ReadLine();
-                valid = name_input.All(Char.IsLetter);
             }
             name_input = char.ToUpper(name_input[0]) + name_input.Substring(1).ToLower();
             return name_input;
         }
 
-        public static bool Confirmation(int id, string type)
+        public int CrewPick(Dictionary<int, CrewMember> CrewMembers, List<int> assignedCrew, string position)
+        {
+            Console.WriteLine("Dostupni {position}i:");
+            foreach (var member in CrewMembers)
+            {
+                if (member.Value.position == position && !assignedCrew.Contains(member.Key))
+                {
+                    Console.WriteLine("{0} - {1} - {2} - {3}",
+                        member.Key, member.Value.name, member.Value.surname, member.Value.dob.ToString());
+                }
+            }
+            int id = InputValid($"Unesite ID {position}a kojeg želite dodati. ", CrewMembers.Count());
+            return id;
+        }
+
+        public bool Confirmation(int id, string type)
         {
             Console.Write("\nJeste li sigurni da želite izmjeniti {0}? (y/n): ", id); 
-            //provjera jel unos uopce dobar myb ? 
-            //mozda nije ni potrebno tbh 
             var message = Console.ReadLine();
             if (message.ToLower() == "y" || message.ToLower() == "yes" || message.ToLower() == "da")
             {
-                Console.WriteLine("Uspješno {0}", type);
-                Continue();
                 return true;
             }
             else
@@ -97,13 +105,13 @@ namespace Aerodrom
             }
         }
 
-        public static void Continue()
+        public void Continue()
         {
             Console.WriteLine("\nPritisnite bilo koju tipku za nastavak...");
             Console.ReadKey();
         }
 
-        public static string ErrInput()
+        public string ErrInput()
         {
             Console.Write("\nNeispravan unos. \nUnesite opet:");
             return Console.ReadLine();

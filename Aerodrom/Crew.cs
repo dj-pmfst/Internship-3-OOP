@@ -2,51 +2,31 @@
 {
     internal class Crew : Funcionality
     {
-        private int nextId = 0;
-        private int crewId = 0;
+        private int nextId = 9;
+        private int crewId = 3;
         public Dictionary<int, CrewMember> CrewMembers { get; set; } = new Dictionary<int, CrewMember>();
 
         public Dictionary<int, List<int>> Crews = new Dictionary<int, List<int>>();
+        public List<int> assignedCrew { get; set; } = new List<int> {0,1,2,3,4,5,6,7,8};
 
         public void AddCrew()
         {
             Console.Clear();
             Console.WriteLine("Dodavanje posade \n \n");
-            foreach (var member in CrewMembers)
-            {
-                if (member.Value.position == "pilot") 
-                { 
-                    Console.WriteLine("{0} - {1} - {2} - {3}", 
-                        member.Key, member.Value.name, member.Value.surname, member.Value.dob); 
-                }
-            }
-            var pilotId = InputValid("Unesite ID pilota kojeg želite dodati. ", CrewMembers.Count()); //validacija da je uneseni id za pilota
+            //validacija da je uneseni id za pilota
+            int pilotId = CrewPick(CrewMembers, assignedCrew, "pilot");
+            int copilotId = CrewPick(CrewMembers, assignedCrew, "copilot");
+            int stewardId = CrewPick(CrewMembers, assignedCrew, "attendant");
 
-            foreach (var member in CrewMembers)
-            {
-                if (member.Value.position == "copilot")
-                {
-                    Console.WriteLine("{0} - {1} - {2} - {3}",
-                        member.Key, member.Value.name, member.Value.surname, member.Value.dob);
-                }
-            }
-            //ovo bi se vjv moglo pojednostavnit
-            var copilotId = InputValid("Unesite ID kopilota kojeg želite dodati. ", CrewMembers.Count());
-
-            foreach (var member in CrewMembers)
-            {
-                if (member.Value.position == "steward" || member.Value.position == "stewardess")    
-                {
-                    Console.WriteLine("{0} - {1} - {2} - {3}",
-                        member.Key, member.Value.name, member.Value.surname, member.Value.dob);
-                }
-            }
-            var stewradId = InputValid("Unesite ID stujara/ese kojeg/u želite dodati. ", CrewMembers.Count());
-
-            Crews[crewId] = new List<int> { pilotId, copilotId, stewradId };
+            Crews[crewId] = new List<int> { pilotId, copilotId, stewardId };
+            assignedCrew.Add(pilotId);
+            assignedCrew.Add(copilotId);
+            assignedCrew.Add(stewardId);
             crewId++;
 
-            //treba dodat provjeru da uneseni clan nije vec negdi
+            Console.WriteLine("Uspješno dodana posada.");
+            Continue();
+            Menus.CrewMenuInput();
         }
 
         private CrewMember CrewMemberRegistration()
@@ -74,6 +54,9 @@
             var newCrewMember = CrewMemberRegistration();
             CrewMembers[nextId] = newCrewMember;
             nextId++;
+
+            Continue();
+            Menus.CrewMenuInput();
         }
 
         public void ListCrew()
@@ -89,10 +72,13 @@
                         id, CrewMembers[id].name, CrewMembers[id].surname, CrewMembers[id].position);
                 }
             }
+            Continue();
+            Menus.CrewMenuInput();
         }
 
-        public void CrewMenu(int input)
+        public void CrewMenu()
         {
+            int input = Menus.CrewMenuInput();
             switch (input)
             {
                 case 0: break;

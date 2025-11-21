@@ -1,22 +1,31 @@
-﻿namespace Aerodrom
+﻿using System.Numerics;
+
+namespace Aerodrom
 {
     internal class Planes : Funcionality
     {
-        private int nextId = 0;
+        private int nextId = 3;
         public Dictionary<int, Plane> Airplanes { get; set; } = new Dictionary<int, Plane>();
 
         private Plane RegisterPlane()
         {
+            var seats = new List<Tuple<string, int>>();
+
             Console.Clear();
             Console.Write("Dodavanje aviona \n \n ");
 
             Console.Write("Unesite ime: ");
-            string name = NameValid(Console.ReadLine(), "name");
-            Console.Write("Unesite godinu proizvodnje: ");
+            string name = Console.ReadLine();
+            Console.Write("Unesite datum proizvodnje: ");
             DateTime year = DateValid(Console.ReadLine());
+            Console.Write("Unesite broj sjedala u economy razredu: ");
+            int economy = (int)NumberValid(Console.ReadLine());
+            Console.Write("Unesite broj sjedala u bussines razredu: ");
+            int bussines = (int)NumberValid(Console.ReadLine());
 
             Console.WriteLine("Uspješno registriran avion {0}", name);
 
+            seats = new List<Tuple<string, int>>() { Tuple.Create("economy", economy), Tuple.Create("business", bussines) };
             return new Plane(name, year.Year, 0, seats);
         }
 
@@ -25,22 +34,26 @@
             var newPlane = RegisterPlane();
             Airplanes[nextId] = newPlane;
             nextId++;
+
+            Continue();
+            Menus.PlanesMenuInput();
         }
 
         public void DeletePlane()
         {
-            var input = Menus.SearchMenu("Brisanje aviona");
+            var input = Menus.SearchMenu("Brisanje aviona \n \n");
+
+            foreach (var plane in Airplanes) { Print(plane); }
 
             if (input == 1)
             {
-                // dodat da izlista sve letove
                 var idInput = InputValid("Unesite ID. ", Airplanes.Count());
                 var confirm = Confirmation(idInput, "brisanje");
                 if (confirm == true)
                 {
                     Airplanes.Remove(idInput);
                 }
-            }
+            } //////////////////////////ovo se triba uredit
 
             else if (input == 2)
             {
@@ -53,7 +66,7 @@
                 }
                 if (planeId == -1) 
                 { 
-                    Console.WriteLine("Ne postoji avion s unesenim ID-em."); 
+                    Console.WriteLine("Ne postoji avion s unesenim nazivom."); 
                     Continue();
                 } 
                 else 
@@ -70,67 +83,52 @@
 
         public void SearchPlane()
         {
-            int input = Menus.SearchMenu("Pretraživanje aviona");
+            int input = Menus.SearchMenu("Pretraživanje aviona \n \n");
 
-            if (input == 1)
+            if (input == 1) { SearchShow("ID"); }
+            else if (input == 2) { SearchShow("naziv"); }
+            else if (input == 0) { Menus.PlanesMenuInput(); }
+        }
+
+        private void SearchShow(string type)
+        {
+            int idInput = -1;
+            string nameInput = "0";
+            if (type == "ID") { idInput = InputValid("Unesite ID", Airplanes.Count()); }
+            else if (type == "naziv")
             {
-                // dodat da izlista sve letove
-                var idInput = InputValid("Unesite ID. ", Airplanes.Count());
-                foreach (var plane in Airplanes)
-                {
-                    if (idInput == plane.Key)
-                    {
-                        Console.WriteLine("ID: {0} - Naziv: {1} - Godina proizvodnje: {2} " +
-                        "- Broj letova: {3} \n",
-                        plane.Key, plane.Value.name, plane.Value.year, plane.Value.numberOfFlights);
-                    }
-                    else
-                    { /// ovo u biti triba maknit jer ce onda printat za svaki let, stavit neki counter myb
-                        Console.WriteLine("Nema aviona s unesenim ID-em. ");
-                        Continue();
-                    }
-                }
+                Console.Write("Unesite ime: ");
+                nameInput = NameValid(Console.ReadLine(), "name");
             }
-            else if (input == 2)
+            foreach (var plane in Airplanes)
             {
-                Console.Write("Unesite naziv aviona: ");
-                var nameInput = NameValid(Console.ReadLine(), "name");
-                foreach (var plane in Airplanes)
-                {
-                    if (nameInput == plane.Value.name)
-                    {
-                        Console.WriteLine("ID: {0} - Naziv: {1} - Godina proizvodnje: {2} " +
-                        "- Broj letova: {3} \n",
-                        plane.Key, plane.Value.name, plane.Value.year, plane.Value.numberOfFlights);
-                    }
-                    else
-                    { /// 
-                        Console.WriteLine("Nema aviona s unesenim nazivom. ");
-                        Continue();
-                    }
-                } //moglo bi se ovo pojednostavnit s obzirom da su oba searcha na isti princip.. mozda jedna funkcija u functionality za sve searcheve? 
+                if (idInput == plane.Key) { Print(plane); idInput = plane.Key; }
+                if (nameInput == plane.Value.name) { Print(plane); idInput = plane.Key; }
             }
-            else if (input == 0)
-            {
-                Menus.PlanesMenuInput();
-            }
+            if (idInput == -1) { Console.WriteLine($"Nema aviona s unesenim {type}om", type); }
+            Continue();
+            Menus.PlanesMenuInput();    
         }
 
         private void ListPlanes()
         {
             Console.Clear();
-            Console.Write("Prikaz svoh aviona \n \n ");
-            foreach (var plane in Airplanes)
-            {
-                Console.WriteLine("ID: {0} - Naziv: {1} - Godina proizvodnje: {2} " +
-                "- Broj letova: {3} \n",
-                plane.Key, plane.Value.name, plane.Value.year, plane.Value.numberOfFlights);
-            }
+            Console.Write("Prikaz svih aviona \n \n");
+            foreach (var plane in Airplanes) { Print(plane); }
             Continue();
+            Menus.PlanesMenuInput();
         }
 
-        public void PlanesMenu(int input)
+        private void Print(KeyValuePair<int, Plane> plane)
         {
+            Console.WriteLine("ID: {0} - Naziv: {1} - Godina proizvodnje: {2} " +
+            "- Broj letova: {3} \n",
+            plane.Key, plane.Value.name, plane.Value.year, plane.Value.numberOfFlights);
+        }
+
+        public void PlanesMenu()
+        {
+            int input = Menus.PlanesMenuInput();
             switch (input)
             {
                 case 0: break;

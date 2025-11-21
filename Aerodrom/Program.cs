@@ -9,17 +9,6 @@
             Crew crew = new Crew();
             Flights flights = new Flights(crew);
 
-            static int MainMenu()
-            {
-                Console.Write("Glavni izbornik \n \n ");
-                var menuText = "Unesite broj za željenu opciju " +
-                    "\n 1-Putnici \n 2-Letovi \n 3-Avioni \n 4-Posada" +
-                    "\n 0-Izlaz iz aplikacije";
-
-                var firstInput = Funcionality.InputValid(menuText, 4);
-
-                return firstInput;
-            }
 
             bool inApp = true;
             int input;
@@ -27,58 +16,51 @@
             passengers.Users.Add(0, new User("Ana", "Anic", DateTime.Parse("3.3.1990"), "anaanic@mail.com", "1234"));
             passengers.Users.Add(1, new User("Mate", "Matic", DateTime.Parse("3.3.1995"), "matematic@mail.com", "4321"));
 
-            flights.Trips.Add(0, new Flight("Pariz", DateTime.Parse("5.5.2025."), DateTime.Parse("5.5.2025."), 457, 2, 0));
-            flights.Trips.Add(1, new Flight("New York", DateTime.Parse("21.5.2025."), DateTime.Parse("22.5.2025."), 1102, 17, 1));
-            flights.Trips.Add(2, new Flight("Peking", DateTime.Parse("5.2.2025."), DateTime.Parse("6.2.2025."), 1365, 22, 2));
+            flights.Trips.Add(0, new Flight("Pariz", DateTime.Parse("5.5.2025. 12:00"), DateTime.Parse("5.5.2025. 14:00"), 457, 2, 0));
+            flights.Trips.Add(1, new Flight("Chicago", DateTime.Parse("21.12.2025. 20:00"), DateTime.Parse("22.12.2025. 13:00"), 1102, 17, 1));
+            flights.Trips.Add(2, new Flight("Peking", DateTime.Parse("5.2.2025. 8:00"), DateTime.Parse("6.2.2025. 6:00"), 1365, 22, 2));
 
-            crew.CrewMembers.Add(0, new CrewMember("Maria", "Maric", DateTime.Parse("9.7.2002."), "stewardess", "female"));
-            crew.CrewMembers.Add(1, new CrewMember("Marko", "Markic", DateTime.Parse("9.10.2000."), "steward", "male"));
+            crew.CrewMembers.Add(0, new CrewMember("Maria", "Maric", DateTime.Parse("9.7.2002."), "attendant", "female"));
+            crew.CrewMembers.Add(1, new CrewMember("Marko", "Markic", DateTime.Parse("9.10.2000."), "attendant", "male"));
             crew.CrewMembers.Add(2, new CrewMember("Ivo", "Ivic", DateTime.Parse("19.8.1985."), "copilot", "male"));
             crew.CrewMembers.Add(3, new CrewMember("Lucija", "Lucic", DateTime.Parse("21.10.2002."), "pilot", "female"));
 
+            crew.CrewMembers.Add(4, new CrewMember("Tomislav", "Tomic", DateTime.Parse("12.12.1988."), "pilot", "male"));
+            crew.CrewMembers.Add(5, new CrewMember("Evan", "Evic", DateTime.Parse("7.7.1995."), "attendant", "male"));
+            crew.CrewMembers.Add(6, new CrewMember("Ivan", "Ivic", DateTime.Parse("23.11.1983."), "copilot", "male"));
 
-            planes.Airplanes.Add(0, new Plane("a320", 2012, 1, seats));
+            crew.CrewMembers.Add(7, new CrewMember("Marina", "Marincic", DateTime.Parse("2.2.1992."), "pilot", "female"));
+            crew.CrewMembers.Add(8, new CrewMember("Petar", "Petrovic", DateTime.Parse("14.6.1987."), "copilot", "male"));
+
+
+            var seats = new List<Tuple<string, int>>();
+
+            seats = new List<Tuple<string, int>>() { Tuple.Create("economy", 100), Tuple.Create("business", 40) };
+            planes.Airplanes.Add(0, new Plane("a320", 2010, 1, seats));
+            seats = new List<Tuple<string, int>>() { Tuple.Create("economy", 300), Tuple.Create("business", 50) };
             planes.Airplanes.Add(1, new Plane("a350", 2005, 1, seats));
-            planes.Airplanes.Add(2, new Plane("a380", 2010, 1, seats));
+            seats = new List<Tuple<string, int>>() { Tuple.Create("economy", 400), Tuple.Create("business", 120) };
+            planes.Airplanes.Add(2, new Plane("a380", 2012, 1, seats));
 
             crew.Crews.Add(0, new List<int> { 3,2,0 });
-            crew.Crews.Add(1, new List<int> { 1 });
-            crew.Crews.Add(2, new List<int> {  });
+            crew.Crews.Add(1, new List<int> { 4,6,1});
+            crew.Crews.Add(2, new List<int> { 7,8,5 });
 
 
             while (inApp)   
-            //rearangeat da su svi menuinput i sl inputi za druge fje u zasebnoj klasi.
-            //u usermenu i sl stavit enum
             {
                 Console.Clear();
-                var menuInput = MainMenu();
-                if (menuInput == 1)
-                {
-                    input = Menus.PassengersMenuInput();
-                    passengers.PassengersMenu(input);
-                }
-                else if (menuInput == 2)
-                {
-                    input = Menus.FlightsMenuInput();
-                    flights.FlightsMenu(input);
-                }
-                else if (menuInput == 3)
-                {
-                    input = Menus.PlanesMenuInput();
-                    planes.PlanesMenu(input);
-                }
-                else if (menuInput == 4)
-                {
-                    input = Menus.CrewMenuInput();
-                    crew.CrewMenu(input);
-                }
+                var menuInput = Menus.MainMenu();
+                if (menuInput == 1) { passengers.PassengersMenu(); }
+                else if (menuInput == 2) { flights.FlightsMenu(); }
+                else if (menuInput == 3) { planes.PlanesMenu(); }
+                else if (menuInput == 4) { crew.CrewMenu(); }
                 else if (menuInput == 0)
                 {
                     Console.WriteLine("Izlazak iz aplikacije.");
                     inApp = false;
                 }
-            }
-            
+            }   
         }
     }
 }

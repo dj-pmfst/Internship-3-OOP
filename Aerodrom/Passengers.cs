@@ -2,7 +2,7 @@
 {
     internal class Passengers : Funcionality
     {
-        private int nextId = 0;
+        private int nextId = 2;
         public Dictionary<int, User> Users { get; set; } = new Dictionary<int, User>();
 
         public User Registration() { 
@@ -40,8 +40,9 @@
             Console.Write("Unesite šifru: ");
         }
 
-        public void PassengersMenu(int input)
+        public void PassengersMenu()
         {
+            int input = Menus.PassengersMenuInput();
             switch (input)
             {
                 case 0: break;
@@ -50,8 +51,9 @@
             }
         }
 
-        public void UserMenu(int input)
+        public void UserMenu()
         {
+            int input = Menus.UserMenuInput();
             switch (input)
             {
                 case 0: Menus.PassengersMenuInput(); break;

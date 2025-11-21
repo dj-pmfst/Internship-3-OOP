@@ -7,7 +7,7 @@
         public DateTime arrival { get; set; }
         public double distance { get; set; }
         public double duration { get; set; }
-        public int crewId { get; set; };
+        public int crewId { get; set; }
 
         public Flight(string name, DateTime departure, DateTime arrival, double distance, double duration, int crewId)
         {
