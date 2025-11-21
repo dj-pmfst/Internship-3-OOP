@@ -13,18 +13,26 @@
         {
             Console.Clear();
             Console.WriteLine("Dodavanje posade \n \n");
-            //validacija da je uneseni id za pilota
+
             int pilotId = CrewPick(CrewMembers, assignedCrew, "pilot");
             int copilotId = CrewPick(CrewMembers, assignedCrew, "copilot");
             int stewardId = CrewPick(CrewMembers, assignedCrew, "attendant");
 
-            Crews[crewId] = new List<int> { pilotId, copilotId, stewardId };
-            assignedCrew.Add(pilotId);
-            assignedCrew.Add(copilotId);
-            assignedCrew.Add(stewardId);
-            crewId++;
+            List<int> invalid = new List<int>() { pilotId, copilotId, stewardId};
 
-            Console.WriteLine("Uspješno dodana posada.");
+            if (invalid.Contains(-1))
+            {
+                Console.WriteLine("\nNemoguće formirat posadu zbog manjka dostupnih članova posade.");
+            }
+            else
+            {
+                Crews[crewId] = new List<int> { pilotId, copilotId, stewardId };
+                assignedCrew.Add(pilotId);
+                assignedCrew.Add(copilotId);
+                assignedCrew.Add(stewardId);
+                crewId++;
+                Console.WriteLine("Uspješno dodana posada.");
+            }
             Continue();
             CrewMenu(); ;
         }
@@ -34,15 +42,11 @@
             Console.Clear();
             Console.WriteLine("Dodavanje člana posade \n \n");
             Console.Write("Unesite ime: ");
-            var name = NameValid(Console.ReadLine(), "name");
-            Console.Write("Unesite prezime: ");
-            var surname = NameValid(Console.ReadLine(), "surname");
-            Console.Write("Unesite datum rođenja: ");
-            DateTime dob = DateValid(Console.ReadLine());
-            Console.Write("Unesite spol (male/female): ");
-            var gender = GenderValid(Console.ReadLine());
-            Console.Write("Unesite poziciju: ");
-            var position = PositionValid(Console.ReadLine());
+            string name = GetInput("Unesite ime: ", s => NameValid(s, "name"));
+            string surname = GetInput("Unesite prezime: ", s => NameValid(s, "surname"));
+            DateTime dob = GetInput("Unesite datum rođenja: ", s => DateValid(s));
+            var gender = GetInput("Unesite spol (m/f): ", s=> GenderValid(s));
+            var position = GetInput("Unesite poziciju (pilot/copilot/attendant): ", s=> PositionValid(s));
 
             Console.WriteLine("Uspješno registriran član posade {0} {1}", name, surname);
 

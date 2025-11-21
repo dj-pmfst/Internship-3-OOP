@@ -3,22 +3,18 @@
     internal class Passengers : Funcionality
     {
         private int nextId = 2;
-        public Dictionary<int, User> Users { get; set; } = new Dictionary<int, User>();
+        public static Dictionary<int, User> Users { get; set; } = new Dictionary<int, User>();
 
-        public User Registration() { 
+        private User Registration() { 
         
             Console.Clear();
             Console.WriteLine("Registracija \n \n");
-            Console.Write("Unesite ime: ");
-            string name = NameValid(Console.ReadLine(), "name");
-            Console.Write("Unesite prezime: ");
-            string surname = NameValid(Console.ReadLine(), "surname");
-            Console.Write("Unesite datum rođenja: ");
-            DateTime dob = DateValid(Console.ReadLine());
-            Console.Write("Unesite email adresu: ");
-            string email = Console.ReadLine();
-            Console.Write("Unesite šifru: ");
-            string password = Console.ReadLine();
+
+            string name = GetInput("Unesite ime: ", s => NameValid(s, "name"));
+            string surname = GetInput("Unesite prezime: ", s=> NameValid(s, "surname"));
+            DateTime dob = GetInput("Unesite datum rođenja: ", s=> DateValid(s));
+            string email = GetInput("Unesite email adresu: ", s=> MailValid(s, Users));
+            string password = GetInput("Unesite šifru: ", s => PswdValid(s));
 
             Console.WriteLine("Uspješno registriran korisnik {0} {1}", name, surname);
 
@@ -90,27 +86,72 @@
             UserMenu(id);
         }
 
+        public void SearchFlights(int id)
+        {
+            var input = Menus.SearchMenu("Pretraživanje letova \n \n");
+            if (Users[id].flights.Count() != 0)
+            {
+                if (input == 1) { SearchShow("ID", id); }
+                else if (input == 2) { SearchShow("naziv", id); }
+                else if (input == 0) { UserMenu(id); }
+            }
+            else 
+            {
+                Console.WriteLine("Korisnik nema zakazanih letova. \n");
+                Continue(); 
+                UserMenu(id); 
+            }
+        }
+
+        private void SearchShow(string type, int id)
+        {
+            int idInput = -1;
+            string nameInput = "0";
+
+            if (type == "ID") { idInput = InputValid("Unesite ID", Flights.Trips.Count()); }
+            else if (type == "naziv")
+            {
+                Console.Write("Unesite ime: ");
+                nameInput = NameValid(Console.ReadLine(), "name");
+            }
+
+            foreach (var trip in Flights.Trips)
+            {
+                if (idInput == trip.Key && Users[id].flights.Contains(trip.Key)) 
+                    { Flights.Print(trip); idInput = trip.Key; }
+                if (nameInput == trip.Value.name && Users[id].flights.Contains(trip.Key)) 
+                    { Flights.Print(trip); idInput = trip.Key; }
+            }
+            if (idInput == -1) { Console.WriteLine($"Nema letova s unesenim {type}om", type); }
+
+            Continue();
+            UserMenu(id);
+        }
+
         public void CancelFlight(int id)
         {
             Menus.UserMenuLoggedIn(id, "Otkazivanje leta", Users);
             ListUserFlight(id);
-
-            Console.Write("Unesite ID leta kojeg želite otkazati.");
-            var inputId = InputValid("0", Flights.Trips.Count());
-
-            var flightDate = Flights.Trips.FirstOrDefault(t => t.Key == inputId).Value.departure;
-            var timeLeft = flightDate - DateTime.Now;
-
-            if (timeLeft < new TimeSpan(0,24,0,0,0)) 
-            { 
-                Console.WriteLine("Let {0} je za manje od 24h, ne može se otkazati.", inputId); 
-                Continue(); 
-            }
-            else if (timeLeft > new TimeSpan(0,24,0,0)) 
+            if (Users[id].flights.Count() != 0)
             {
-                var confirm = Confirmation(inputId, "brisanje");
-                if (confirm == true) { Users[id].flights.Remove(inputId); } 
+                Console.Write("Unesite ID leta kojeg želite otkazati.");
+                var inputId = InputValid("0", Flights.Trips.Count());
+
+                var flightDate = Flights.Trips.FirstOrDefault(t => t.Key == inputId).Value.departure;
+                var timeLeft = flightDate - DateTime.Now;
+
+                if (timeLeft < new TimeSpan(0,24,0,0,0)) 
+                { 
+                    Console.WriteLine("Let {0} je za manje od 24h, ne može se otkazati.", inputId); 
+                    Continue(); 
+                }
+                else if (timeLeft > new TimeSpan(0,24,0,0)) 
+                {
+                    var confirm = Confirmation(inputId, "brisanje");
+                    if (confirm == true) { Users[id].flights.Remove(inputId); } 
+                }
             }
+            else { Continue(); }
             UserMenu(id);
         }
 
@@ -121,6 +162,7 @@
                 var trip = Flights.Trips.FirstOrDefault(t => t.Key == flightId);
                 Flights.Print(trip);
             }
+            if (Users[id].flights.Count() == 0) { Console.WriteLine("Korisnik nema zakazanih letova."); }
         }
 
         public void PassengersMenu()
@@ -129,7 +171,7 @@
             switch (input)
             {
                 case 0: break;
-                case 1: Registration(); break;
+                case 1: AddUser(); break;
                 case 2: LogIn(); break;
             }
         }
@@ -142,7 +184,7 @@
                 case 0: Menus.PassengersMenuInput(); break;
                 case 1: UserFlights(id);  break;
                 case 2: ChooseFlight(id); break;
-                case 3: break;
+                case 3: SearchFlights(id); break;
                 case 4: CancelFlight(id); break;
             }
         }

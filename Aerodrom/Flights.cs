@@ -15,16 +15,15 @@ namespace Aerodrom
         {
             Console.Clear();
             Console.WriteLine("Dodavanje letova \n \n");
-            Console.Write("Unesite ime: ");
-            string name = NameValid(Console.ReadLine(), "name");
-            Console.Write("Unesite datum i vrijeme polaska: ");
-            DateTime departure = DateValid(Console.ReadLine());
-            Console.Write("Unesite datum dolaska: ");
-            DateTime arrival = DateValid(Console.ReadLine());
-            Console.Write("Unesite udaljenost: ");
-            double distance = NumberValid(Console.ReadLine());
-            int crewId = InputValid("Unesite ID posade. ", crew.Crews.Count);
 
+            string name = GetInput("Unesite ime: ", s => NameValid(s, "name"));
+            DateTime departure = GetInput("Unesite datum i vrijeme polaska (ne smije biti prije današnjeg datuma): ", s=> DateValidFlight(s));
+            DateTime arrival = GetInput("Unesite datum i vrijeme dolaska: ", s=> DateValidFlight(s));
+            double distance = GetInput("Unesite udaljenost: ", s=> NumberValid(s));
+            int crewId = InputValid("Unesite ID posade. ", crew.Crews.Count);
+            int planeId = InputValid("Unesite ID aviona.", Planes.Airplanes.Count);
+
+            Planes.Airplanes[planeId].flights.Add(nextId);
             TimeSpan duration = arrival - departure;
 
             Console.WriteLine("Uspješno registriran let {0}", name);
@@ -54,7 +53,7 @@ namespace Aerodrom
         {
             int idInput = -1;
             string nameInput = "0";
-            if (type == "ID") { idInput = InputValid("Unesite ID", Trips.Count()); }
+            if (type == "ID") { idInput = InputValid("Unesite ID", nextId); }
             else if (type == "naziv") 
             { 
                 Console.Write("Unesite ime: "); 
@@ -76,20 +75,20 @@ namespace Aerodrom
             Console.WriteLine("Uređivanje leta \n \n");
             foreach (var flight in Trips) { Print(flight); }
 
-            var idInput = InputValid("\nUnesite ID leta kojeg zelite urediti. ", Trips.Count()); //ispis ako uneseni id ne postoji ? nema potrebe ako listan sve prije
+            var idInput = InputValid("\nUnesite ID leta kojeg zelite urediti. ", nextId); 
             var confirm = Confirmation(idInput, "uređivanje");
 
             if (confirm == true)
             {
                 Console.Write("Unesite novo vrijeme polaska: ");
-                Trips[idInput].arrival = DateValid(Console.ReadLine());
+                Trips[idInput].arrival = DateValidFlight(Console.ReadLine());
                 Console.Write("Unesite novo vrijeme dolaska: ");
-                Trips[idInput].departure = DateValid(Console.ReadLine());
+                Trips[idInput].departure = DateValidFlight(Console.ReadLine());
                 Trips[idInput].crewId = InputValid("Unesite ID nove posade. ", crew.Crews.Count);
 
                 Console.WriteLine("Uspješno uređivanje.");
+                Continue();
             }
-            Continue();
             FlightsMenu();
         }
         
@@ -97,20 +96,53 @@ namespace Aerodrom
         {
             Console.Clear();
             Console.WriteLine("Brisanje leta \n \n");
-            foreach (var flight in Trips) { Print(flight); }
 
-            var idInput = InputValid("\nUnesite ID leta kojeg zelite izbrisati: ", Trips.Count());  
-            var confirm = Confirmation(idInput, "brisanje");
+            if (Trips.Count != 0)
+            {
+                foreach (var flight in Trips) { Print(flight); }
 
-            if (confirm == true) { Trips.Remove(idInput); }
+                var idInput = InputValid("\nUnesite ID leta kojeg zelite izbrisati: ", Trips.Count());
+                var timeLeft = Trips[idInput].departure - DateTime.Now;
+                if (timeLeft < new TimeSpan(0, 24, 0, 0, 0))
+                {
+                    Console.WriteLine("Let {0} je za manje od 24h, ne može se otkazati.", idInput);
+                }
+                else if (timeLeft > new TimeSpan(0, 24, 0, 0))
+                {
+                    var confirm = Confirmation(idInput, "brisanje");
+                    if (confirm == true) 
+                    { 
+                        Trips.Remove(idInput);
+                        foreach (var user in Passengers.Users)
+                        {
+                            if (user.Value.flights.Contains(idInput))
+                            {
+                                user.Value.flights.Remove(idInput);
+                            }
+                        }
+                        foreach (var plane in Planes.Airplanes)
+                        {
+                            if (plane.Value.flights.Contains(idInput))
+                            {
+                                plane.Value.flights.Remove(idInput);
+                            }
+                        }
+                    }
+                }
+            }
+            else { Console.WriteLine("Nema zakazanih letova."); }
 
-            Continue ();
+            Continue();
             FlightsMenu();
         }
 
         public void ListFlights()
         {
-            foreach (var trip in Trips) { Print(trip); }
+            if (Trips.Count != 0)
+            {
+                foreach (var trip in Trips) { Print(trip); }
+            }
+            else { Console.WriteLine("Nema zakazanih letova."); }
             Continue();
             FlightsMenu();
         }
@@ -134,8 +166,8 @@ namespace Aerodrom
             Console.WriteLine("\nID: {0} - Naziv: {1} - Udaljenost: {2} km " +
             "- Datum polaska: {3} - Datum dolaska: {4} " +
             "- Vrijeme putovanja: {5} h \n",
-            trip.Key, trip.Value.name, trip.Value.distance, trip.Value.arrival, trip.Value.departure,
-            trip.Value.duration);
+            trip.Key, trip.Value.name, trip.Value.distance, trip.Value.departure, trip.Value.arrival,
+            Math.Round(trip.Value.duration,2));
         }
     }
 }

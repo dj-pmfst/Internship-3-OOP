@@ -18,6 +18,24 @@ namespace Aerodrom
             attendant
         }
 
+        public static T GetInput<T>(string prompt, Func<string, T> validator)
+        {
+            while (true)
+            {
+                Console.Write(prompt);
+                string input = Console.ReadLine();
+
+                try { return validator(input); }
+                catch (Exception ex) { Console.WriteLine($"Neispravan unos: {ex.Message}"); }
+            }
+        }
+
+        public string PlaneValid(string name)
+        {
+            while (string.IsNullOrWhiteSpace(name) || name.Contains(" ")) { name = ErrInput(); }
+            return name;
+        }
+
         public string GenderValid(string genderInput)
         {
             while(!Enum.TryParse(genderInput.ToLower(), true, out Gender gender)) { genderInput = ErrInput(); }
@@ -32,7 +50,13 @@ namespace Aerodrom
 
         public DateTime DateValid(string dateInput)
         {
-            while (!DateTime.TryParse(dateInput, out DateTime date) || date.Year > 2050) { dateInput = ErrInput(); }
+            while (!DateTime.TryParse(dateInput, out DateTime date) || date.Year > 2025) { dateInput = ErrInput(); }
+            return DateTime.Parse(dateInput);
+        }
+
+        public DateTime DateValidFlight(string dateInput)
+        {
+            while (!DateTime.TryParse(dateInput, out DateTime date) || date < DateTime.Now) { dateInput = ErrInput(); }
             return DateTime.Parse(dateInput);
         }
 
@@ -63,7 +87,7 @@ namespace Aerodrom
 
         public string NameValid(string name_input, string type)
         {
-            while (string.IsNullOrWhiteSpace(name_input) || !name_input.All(Char.IsLetter))
+            while (string.IsNullOrWhiteSpace(name_input) || !name_input.All(Char.IsLetter) || name_input.Contains(" "))
             {
                 Console.WriteLine("Neispravan unos. Unesite opet.");
                 if (type == "name") { Console.Write("\nUnesite ime: "); }
@@ -74,19 +98,54 @@ namespace Aerodrom
             return name_input;
         }
 
+        public static string MailValid(string mail, Dictionary<int, User> users)
+        {
+            bool exists = users.Any(u =>u.Value.email.Equals(mail, StringComparison.OrdinalIgnoreCase));
+
+            while (string.IsNullOrWhiteSpace(mail) || !mail.Contains("@") || !mail.Contains(".") || exists == true || mail.Contains(" "))
+            {
+                if (exists == true) { Console.WriteLine("Korisnik s unesenim emailom već postoji."); }
+                Console.WriteLine("Email mora sadržavati domenu (karakterizirano znakom @ i .)");
+                Console.Write("Unesite opet: ");
+                mail = Console.ReadLine();
+                exists = users.Any(u => u.Value.email.Equals(mail, StringComparison.OrdinalIgnoreCase));
+            }
+            return mail;
+        }
+
+        public static string PswdValid(string pswd)
+        {
+            while (string.IsNullOrWhiteSpace(pswd) || pswd.Length < 4 || pswd.Contains(" "))
+            {
+                Console.WriteLine("Šifra ne može biti prazna ni kraća od 4 znaka.");
+                Console.Write("Unesite šifru: ");
+                pswd = Console.ReadLine();
+            }
+            return pswd;
+        }
+
+
         public int CrewPick(Dictionary<int, CrewMember> CrewMembers, List<int> assignedCrew, string position)
         {
-            Console.WriteLine("Dostupni {position}i:");
+            List<int> valid = new List<int>();
+            Console.WriteLine($"Dostupni {position}i: \n");
             foreach (var member in CrewMembers)
             {
                 if (member.Value.position == position && !assignedCrew.Contains(member.Key))
                 {
                     Console.WriteLine("{0} - {1} - {2} - {3}",
-                        member.Key, member.Value.name, member.Value.surname, member.Value.dob.ToString());
+                        member.Key, member.Value.name, member.Value.surname, member.Value.dob.ToString("dd/MM/yyyy"));
+                        valid.Add(member.Key);
                 }
+            } 
+            if (valid.Count > 0)
+            {
+                int id = InputValid($"\nUnesite ID {position}a kojeg želite dodati. ", CrewMembers.Count());
+                if (valid.Contains(id)) { return id; }
+                else { Console.WriteLine("Nema dostupnog {0}a s unesenim ID-om.", position); }
             }
-            int id = InputValid($"Unesite ID {position}a kojeg želite dodati. ", CrewMembers.Count());
-            return id;
+            else { Console.WriteLine("\nNema dostupnih {0}a s unesenim ID-em.", position); }
+            return -1;
         }
 
         public bool Confirmation(int id, string type)
