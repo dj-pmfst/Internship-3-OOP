@@ -16,10 +16,10 @@ namespace Aerodrom
             Console.Clear();
             Console.WriteLine("Dodavanje letova \n \n");
 
-            string name = GetInput("Unesite ime: ", s => NameValid(s, "name"));
-            DateTime departure = GetInput("Unesite datum i vrijeme polaska (ne smije biti prije današnjeg datuma): ", s=> DateValidFlight(s));
-            DateTime arrival = GetInput("Unesite datum i vrijeme dolaska: ", s=> DateValidFlight(s));
-            double distance = GetInput("Unesite udaljenost: ", s=> NumberValid(s));
+            string name = GetInput("ime: ", s => NameValid(s, "name"));
+            DateTime departure = GetInput("datum i vrijeme polaska (ne smije biti prije današnjeg datuma): ", s=> DateValidFlight(s));
+            DateTime arrival = GetInput("datum i vrijeme dolaska: ", s=> DateValidFlight(s));
+            double distance = GetInput("udaljenost: ", s=> NumberValid(s));
             int crewId = InputValid("Unesite ID posade. ", crew.Crews.Count);
             int planeId = InputValid("Unesite ID aviona.", Planes.Airplanes.Count);
 
@@ -135,6 +135,55 @@ namespace Aerodrom
             Continue();
             FlightsMenu();
         }
+        private void SortByAlphabet()
+        {
+            Console.Clear();
+            Console.WriteLine("Ispis svih letova abecedno \n \n");
+            var sortedFlights = Flights.Trips.ToList();
+            sortedFlights.Sort((a, b) => string.Compare(a.Value.name, b.Value.name, StringComparison.OrdinalIgnoreCase));
+            foreach (var trip in sortedFlights) { Print(trip); }
+            Continue();
+            SortFlights();
+        }
+        private void SortByTime(string type)
+        {
+            Console.Clear();
+            List<KeyValuePair<int, Flight>> sortedFlights = new List<KeyValuePair<int, Flight>>();
+
+            if (type == "up")
+            {
+                Console.WriteLine("Ispis svih letova prema vremenu polaska uzlazno \n \n");
+                sortedFlights = Trips.OrderBy(p => p.Value.departure).ToList();
+            }
+            else if (type == "down")
+            {
+                Console.WriteLine("Ispis svih letova prema vremenu polaska silazno \n \n");
+                sortedFlights = Trips.OrderByDescending(p => p.Value.departure).ToList();
+            }
+            foreach (var trip in sortedFlights) { Print(trip); }
+            Continue();
+            SortFlights();
+        }
+
+        private void SortByDuration(string type)
+        {
+            Console.Clear();
+            List<KeyValuePair<int, Flight>> sortedFlights = new List<KeyValuePair<int, Flight>>();
+
+            if (type == "up")
+            {
+                Console.WriteLine("Ispis svih letova prema trajanju uzlazno \n \n");
+                sortedFlights = Trips.OrderBy(p => p.Value.duration).ToList();
+            }
+            else if (type == "down")
+            {
+                Console.WriteLine("Ispis svih letova prema trajanju silazno \n \n");
+                sortedFlights = Trips.OrderByDescending(p => p.Value.duration).ToList();
+            }
+            foreach (var trip in sortedFlights) { Print(trip); }
+            Continue();
+            SortFlights();
+        }
 
         public void ListFlights()
         {
@@ -158,6 +207,20 @@ namespace Aerodrom
                 case 3: SearchFlights(); break;
                 case 4: EditFlight(); break;
                 case 5: DeleteFlight(); break;
+                case 6: SortFlights(); break;
+            }
+        }
+        private void SortFlights()
+        {
+            int input = Menus.SortFlightsInput();
+            switch (input)
+            {
+                case 0: FlightsMenu(); break;
+                case 1: SortByAlphabet(); break;
+                case 2: SortByTime("up"); break;
+                case 3: SortByTime("down"); break;
+                case 4: SortByDuration("up"); break;
+                case 5: SortByDuration("down"); break;
             }
         }
 

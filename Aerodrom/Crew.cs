@@ -41,12 +41,12 @@
         {
             Console.Clear();
             Console.WriteLine("Dodavanje člana posade \n \n");
-            Console.Write("Unesite ime: ");
-            string name = GetInput("Unesite ime: ", s => NameValid(s, "name"));
-            string surname = GetInput("Unesite prezime: ", s => NameValid(s, "surname"));
-            DateTime dob = GetInput("Unesite datum rođenja: ", s => DateValid(s));
-            var gender = GetInput("Unesite spol (m/f): ", s=> GenderValid(s));
-            var position = GetInput("Unesite poziciju (pilot/copilot/attendant): ", s=> PositionValid(s));
+
+            string name = GetInput("ime: ", s => NameValid(s, "name"));
+            string surname = GetInput("prezime: ", s => NameValid(s, "surname"));
+            DateTime dob = GetInput("datum rođenja: ", s => DateValid(s));
+            var gender = GetInput("spol (m/f): ", s=> GenderValid(s));
+            var position = GetInput("poziciju (pilot/copilot/attendant): ", s=> PositionValid(s));
 
             Console.WriteLine("Uspješno registriran član posade {0} {1}", name, surname);
 

@@ -14,8 +14,8 @@ namespace Aerodrom
             Console.Clear();
             Console.Write("Dodavanje aviona \n \n ");
 
-            string name = GetInput("Unesite ime: ", s=> PlaneValid(s)); ;
-            DateTime year = GetInput("Unesite datum proizvodnje: ",s => DateValid(s));
+            string name = GetInput("ime: ", s=> PlaneValid(s)); ;
+            DateTime year = GetInput("datum proizvodnje: ",s => DateValid(s));
             Console.Write("Unesite broj sjedala u economy razredu: ");
             int economy = (int)NumberValid(Console.ReadLine());
             Console.Write("Unesite broj sjedala u bussines razredu: ");
@@ -112,6 +112,46 @@ namespace Aerodrom
             PlanesMenu();
         }
 
+        private void SortByYear(string type)
+        {
+            Console.Clear();
+            List<KeyValuePair<int, Plane>> sortedPlanes = new List<KeyValuePair<int, Plane>>();
+
+            if (type == "up")
+            {
+                Console.WriteLine("Ispis svih aviona prema godini proivodnje uzlazno \n \n");
+                sortedPlanes = Airplanes.OrderBy(p => p.Value.year).ToList();
+            }
+            else if (type == "down")
+            {
+                Console.WriteLine("Ispis svih aviona prema godini proivodnje silazno \n \n");
+                sortedPlanes = Airplanes.OrderByDescending(p => p.Value.year).ToList();
+            }
+            foreach (var plane in sortedPlanes) { Print(plane); }
+            Continue ();
+            SortPlanes();
+        }
+
+        private void SortByFlight(string type)
+        {
+            Console.Clear();
+            List<KeyValuePair<int, Plane>> sortedPlanes = new List<KeyValuePair<int, Plane>>();
+
+            if (type == "up")
+            {
+                Console.WriteLine("Ispis svih aviona prema broju letova uzlazno \n \n");
+                sortedPlanes = Airplanes.OrderBy(p => p.Value.flights.Count).ToList();
+            }
+            else if (type == "down")
+            {
+                Console.WriteLine("Ispis svih aviona prema broju letova silazno \n \n");
+                sortedPlanes = Airplanes.OrderByDescending(p => p.Value.flights.Count).ToList();
+            }
+            foreach (var plane in sortedPlanes) { Print(plane); }
+            Continue();
+            SortPlanes();
+        }
+
         private void ListPlanes()
         {
             Console.Clear();
@@ -142,6 +182,21 @@ namespace Aerodrom
                 case 2: AddPlane(); break;
                 case 3: SearchPlane(); break;
                 case 4: DeletePlane(); break;
+                case 5: SortPlanes(); break;
+            }
+        }
+
+        private void SortPlanes()
+        {
+            int input = Menus.SortPlanesInput();
+            switch (input)
+            {
+                case 0: PlanesMenu(); break;
+                case 1: ListPlanes(); break;
+                case 2: SortByYear("up"); break;
+                case 3: SortByYear("down"); break;
+                case 4: SortByFlight("up"); break;
+                case 5: SortByFlight("down"); break;
             }
         }
     }

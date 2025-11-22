@@ -10,11 +10,11 @@
             Console.Clear();
             Console.WriteLine("Registracija \n \n");
 
-            string name = GetInput("Unesite ime: ", s => NameValid(s, "name"));
-            string surname = GetInput("Unesite prezime: ", s=> NameValid(s, "surname"));
-            DateTime dob = GetInput("Unesite datum rođenja: ", s=> DateValid(s));
-            string email = GetInput("Unesite email adresu: ", s=> MailValid(s, Users));
-            string password = GetInput("Unesite šifru: ", s => PswdValid(s));
+            string name = GetInput("ime: ", s => NameValid(s, "name"));
+            string surname = GetInput("prezime: ", s=> NameValid(s, "surname"));
+            DateTime dob = GetInput("datum rođenja: ", s=> DateValid(s));
+            string email = GetInput("email adresu: ", s=> MailValid(s, Users));
+            string password = GetInput("šifru: ", s => PswdValid(s));
 
             Console.WriteLine("Uspješno registriran korisnik {0} {1}", name, surname);
 
@@ -181,7 +181,7 @@
             int input = Menus.UserMenuInput(id, Users);
             switch (input)
             {
-                case 0: Menus.PassengersMenuInput(); break;
+                case 0: PassengersMenu(); break;
                 case 1: UserFlights(id);  break;
                 case 2: ChooseFlight(id); break;
                 case 3: SearchFlights(id); break;

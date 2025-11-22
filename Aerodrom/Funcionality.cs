@@ -22,7 +22,7 @@ namespace Aerodrom
         {
             while (true)
             {
-                Console.Write(prompt);
+                Console.Write("Unesite {0}",prompt);
                 string input = Console.ReadLine();
 
                 try { return validator(input); }
