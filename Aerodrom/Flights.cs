@@ -5,8 +5,7 @@ namespace Aerodrom
 {
     internal class Flights : Funcionality
     {
-        private int nextId = 3;
-
+        public static List<int> flightId = ID(2);
         private Crew crew;
         public static Dictionary<int, Flight> Trips { get; set; } = new Dictionary<int, Flight>();
         public Flights(Crew c) { crew = c; }
@@ -20,10 +19,10 @@ namespace Aerodrom
             DateTime departure = GetInput("datum i vrijeme polaska (ne smije biti prije današnjeg datuma): ", s=> DateValidFlight(s));
             DateTime arrival = GetInput("datum i vrijeme dolaska: ", s=> DateValidFlight(s));
             double distance = GetInput("udaljenost: ", s=> NumberValid(s));
-            int crewId = InputValid("Unesite ID posade. ", crew.Crews.Count);
-            int planeId = InputValid("Unesite ID aviona.", Planes.Airplanes.Count);
+            int crewId = idValid("Unesite ID posade. ", Crew.crewId, "0");
+            int planeId = idValid("Unesite ID aviona.", Planes.planeId, "0");
 
-            Planes.Airplanes[planeId].flights.Add(nextId);
+            Planes.Airplanes[planeId].flights.Add(flightId.LastOrDefault() + 1);
             TimeSpan duration = arrival - departure;
 
             Console.WriteLine("Uspješno registriran let {0}", name);
@@ -34,8 +33,9 @@ namespace Aerodrom
         public void AddFlight()
         {
             var newFlight = RegisterFlight();
+            var nextId = flightId.LastOrDefault() + 1;
             Trips[nextId] = newFlight;
-            nextId++;
+            flightId.Add(nextId);
             Continue();
             FlightsMenu();
         }
@@ -53,7 +53,7 @@ namespace Aerodrom
         {
             int idInput = -1;
             string nameInput = "0";
-            if (type == "ID") { idInput = InputValid("Unesite ID", nextId); }
+            if (type == "ID") { idInput = idValid("Unesite ID", flightId, "search"); }
             else if (type == "naziv") 
             { 
                 Console.Write("Unesite ime: "); 
@@ -75,7 +75,7 @@ namespace Aerodrom
             Console.WriteLine("Uređivanje leta \n \n");
             foreach (var flight in Trips) { Print(flight); }
 
-            var idInput = InputValid("\nUnesite ID leta kojeg zelite urediti. ", nextId); 
+            var idInput = idValid("\nUnesite ID leta kojeg zelite urediti. ", flightId, "0"); 
             var confirm = Confirmation(idInput, "uređivanje");
 
             if (confirm == true)
@@ -84,7 +84,7 @@ namespace Aerodrom
                 Trips[idInput].arrival = DateValidFlight(Console.ReadLine());
                 Console.Write("Unesite novo vrijeme dolaska: ");
                 Trips[idInput].departure = DateValidFlight(Console.ReadLine());
-                Trips[idInput].crewId = InputValid("Unesite ID nove posade. ", crew.Crews.Count);
+                Trips[idInput].crewId = idValid("Unesite ID nove posade. ", Crew.crewId, "0");
 
                 Console.WriteLine("Uspješno uređivanje.");
                 Continue();
@@ -101,7 +101,7 @@ namespace Aerodrom
             {
                 foreach (var flight in Trips) { Print(flight); }
 
-                var idInput = InputValid("\nUnesite ID leta kojeg zelite izbrisati: ", Trips.Count());
+                var idInput = idValid("\nUnesite ID leta kojeg zelite izbrisati: ", flightId, "0");
                 var timeLeft = Trips[idInput].departure - DateTime.Now;
                 if (timeLeft < new TimeSpan(0, 24, 0, 0, 0))
                 {
@@ -113,6 +113,7 @@ namespace Aerodrom
                     if (confirm == true) 
                     { 
                         Trips.Remove(idInput);
+                        flightId.RemoveAll(x => x == idInput);
                         foreach (var user in Passengers.Users)
                         {
                             if (user.Value.flights.Contains(idInput))

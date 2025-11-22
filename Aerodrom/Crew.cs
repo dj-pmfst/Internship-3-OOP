@@ -2,8 +2,8 @@
 {
     internal class Crew : Funcionality
     {
-        private int nextId = 9;
-        private int crewId = 3;
+        private List<int> memberId = ID(8);
+        public static List<int> crewId = ID(2);
         public Dictionary<int, CrewMember> CrewMembers { get; set; } = new Dictionary<int, CrewMember>();
 
         public Dictionary<int, List<int>> Crews = new Dictionary<int, List<int>>();
@@ -26,11 +26,12 @@
             }
             else
             {
-                Crews[crewId] = new List<int> { pilotId, copilotId, stewardId };
+                var nextId = crewId.LastOrDefault()+1;
+                Crews[nextId] = new List<int> { pilotId, copilotId, stewardId };
                 assignedCrew.Add(pilotId);
                 assignedCrew.Add(copilotId);
                 assignedCrew.Add(stewardId);
-                crewId++;
+                crewId.Add(nextId);
                 Console.WriteLine("Uspješno dodana posada.");
             }
             Continue();
@@ -56,8 +57,9 @@
         public void AddCrewMember()
         {
             var newCrewMember = CrewMemberRegistration();
+            var nextId = memberId.LastOrDefault()+1;
             CrewMembers[nextId] = newCrewMember;
-            nextId++;
+            memberId.Add(nextId);
 
             Continue();
             CrewMenu();

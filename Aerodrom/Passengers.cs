@@ -2,7 +2,7 @@
 {
     internal class Passengers : Funcionality
     {
-        private int nextId = 2;
+        private List<int> userId = ID(1);
         public static Dictionary<int, User> Users { get; set; } = new Dictionary<int, User>();
 
         private User Registration() { 
@@ -24,8 +24,9 @@
         public void AddUser()
         {
             var newUser = Registration();
+            var nextId = userId.LastOrDefault()+1;
             Users[nextId] = newUser;
-            nextId++;
+            userId.Add(nextId);
             Continue();
             PassengersMenu();
         }
@@ -75,7 +76,7 @@
             }
 
             Console.Write("Unesite ID leta koji želite zakazati.");
-            var flightId = InputValid("0", Flights.Trips.Count());
+            var flightId = idValid("", Flights.flightId, "0");
             if (!Users[id].flights.Contains(flightId))
             {
                 Users[id].flights.Add(flightId);
@@ -108,7 +109,7 @@
             int idInput = -1;
             string nameInput = "0";
 
-            if (type == "ID") { idInput = InputValid("Unesite ID", Flights.Trips.Count()); }
+            if (type == "ID") { idInput = idValid("Unesite ID", Flights.flightId, "search"); }
             else if (type == "naziv")
             {
                 Console.Write("Unesite ime: ");
@@ -135,7 +136,7 @@
             if (Users[id].flights.Count() != 0)
             {
                 Console.Write("Unesite ID leta kojeg želite otkazati.");
-                var inputId = InputValid("0", Flights.Trips.Count());
+                var inputId = idValid("", Flights.flightId, "0");
 
                 var flightDate = Flights.Trips.FirstOrDefault(t => t.Key == inputId).Value.departure;
                 var timeLeft = flightDate - DateTime.Now;

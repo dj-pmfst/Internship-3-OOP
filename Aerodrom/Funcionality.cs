@@ -1,4 +1,5 @@
 ﻿using static Aerodrom.Funcionality;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Aerodrom
 {
@@ -18,6 +19,16 @@ namespace Aerodrom
             attendant
         }
 
+        public static List<int> ID(int max)
+        {
+            List<int> idList = new List<int>();
+            if (max != -1)
+            {
+                for (int index = 0; index <= max; index++) { idList.Add(index); }
+            }
+            return idList;
+        }
+
         public static T GetInput<T>(string prompt, Func<string, T> validator)
         {
             while (true)
@@ -30,6 +41,21 @@ namespace Aerodrom
             }
         }
 
+        public int idValid(string text, List<int> idList, string type)
+        {
+            Console.Write("{0}\nOdabir: ", text);
+            var input = Console.ReadLine();
+            if (type == "0")
+            {
+                while (!int.TryParse(input, out int id) || !idList.Contains(id)) { input = ErrInput(); }
+            }
+            else if (type == "search")
+            {
+                while (!int.TryParse(input, out int id)) { input = ErrInput(); }
+                if (!idList.Contains(int.Parse(input))) { input = "-1"; }
+            }
+            return int.Parse(input);
+        }
         public string PlaneValid(string name)
         {
             while (string.IsNullOrWhiteSpace(name) || name.Contains(" ")) { name = ErrInput(); }

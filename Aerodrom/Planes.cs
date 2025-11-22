@@ -4,7 +4,7 @@ namespace Aerodrom
 {
     internal class Planes : Funcionality
     {
-        private int nextId = 3;
+        public static List<int> planeId = ID(2);
         public static Dictionary<int, Plane> Airplanes { get; set; } = new Dictionary<int, Plane>();
 
         private Plane RegisterPlane()
@@ -30,8 +30,9 @@ namespace Aerodrom
         public void AddPlane()
         {
             var newPlane = RegisterPlane();
+            var nextId = planeId.LastOrDefault()+1;
             Airplanes[nextId] = newPlane;
-            nextId++;
+            planeId.Add(nextId);
 
             Continue();
             PlanesMenu();
@@ -46,8 +47,8 @@ namespace Aerodrom
 
                 if (input == 1)
                 {
-                    var idInput = InputValid("Unesite ID. ", nextId);
-                    DeleteHelper($"\"idInput\"");
+                    var idInput = idValid("Unesite ID. ", planeId, "0").ToString();
+                    DeleteHelper(idInput);
                 }
 
                 else if (input == 2)
@@ -64,22 +65,23 @@ namespace Aerodrom
 
         private void DeleteHelper(string input)
         {
-            int planeId = -1;
+            int id = -1;
             var nameInput = input;
             var idInput = input;
             foreach (var plane in Airplanes)
             {
-                if (plane.Value.name == nameInput || plane.Key.ToString() == idInput) { planeId = plane.Key; }
+                if (plane.Value.name == nameInput || plane.Key.ToString() == idInput) { id = plane.Key; }
             }
-            if (planeId == -1)
+            if (id == -1)
             {
                 Console.WriteLine("Ne postoji avion s unesenim nazivom.");
                 Continue();
             }
             else
             {
-                var confirm = Confirmation(planeId, "brisanje");
-                Airplanes.Remove(planeId);
+                var confirm = Confirmation(id, "brisanje");
+                Airplanes.Remove(id);
+                planeId.RemoveAll(x => x == id);
             }
         }
 
@@ -96,7 +98,7 @@ namespace Aerodrom
         {
             int idInput = -1;
             string nameInput = "0";
-            if (type == "ID") { idInput = InputValid("Unesite ID", nextId); }
+            if (type == "ID") { idInput = idValid("Unesite ID", planeId, "search"); }
             else if (type == "naziv")
             {
                 Console.Write("Unesite ime: ");
